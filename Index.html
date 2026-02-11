@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebook Library - Request Your Books</title>
+    <style>
+        :root {
+            --primary: #25D366; /* WhatsApp green */
+            --secondary: #128C7E;
+            --accent: #075E54;
+            --dark: #1e293b;
+            --light: #f8f9fa;
+            --warning: #f72585;
+            --gray: #64748b;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f7ff 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(120deg, var(--accent), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 2.2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            font-size: 1.05rem;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.05rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        }
+        
+        .btn-primary:hover {
+            background: #20bc5a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Page Styles */
+        .page {
+            display: none;
+            min-height: calc(100vh - 120px);
+            padding: 50px 0;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.8rem;
+            color: var(--accent);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        /* Home Page */
+        .hero {
+            text-align: center;
+            padding: 70px 30px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fdff 100%);
+        }
+        
+        .hero h1 {
+            font-size: 3.8rem;
+            margin-bottom: 25px;
+            background: linear-gradient(to right, var(--accent), var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto 35px;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        
+        .cta-button {
+            margin-top: 20px;
+        }
+        
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 35px;
+            margin-top: 50px;
+        }
+        
+        .benefit-card {
+            background: white;
+            padding: 35px 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid #e8f5f0;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+        
+        .benefit-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+        }
+        
+        .benefit-card h3 {
+            margin-bottom: 18px;
+            color: var(--secondary);
+            font-size: 1.8rem;
+        }
+        
+        .benefit-card p {
+            color: var(--gray);
+            font-size: 1.05rem;
+        }
+        
+        /* Main Page */
+        .book-request-container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: white;
+            padding: 45px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 2px solid #e8f5f0;
+        }
+        
+        .book-form {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 1.05rem;
+        }
+        
+        .form-group input, .form-group textarea {
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .price-note {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            margin: 20px 0;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .price-note strong {
+            color: var(--accent);
+        }
+        
+        .submit-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        /* About Page */
+        .about-content {
+            background: white;
+            padding: 50px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 850px;
+            margin: 0 auto;
+            border: 2px solid #e8f5f0;
+        }
+        
+        .about-section {
+            margin-bottom: 35px;
+        }
+        
+        .about-section h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f9ff;
+        }
+        
+        .about-section p {
+            line-height: 1.8;
+            color: var(--gray);
+            font-size: 1.05rem;
+        }
+        
+        .admin-info {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f8fdff 100%);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .admin-info h4 {
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+        
+        .support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .support-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            padding: 20px;
+            background: #f8fdff;
+            border-radius: var(--radius);
+            border: 2px solid #e8f5f0;
+            transition: var(--transition);
+        }
+        
+        .support-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.15);
+        }
+        
+        .support-icon {
+            font-size: 2.2rem;
+            color: var(--primary);
+            min-width: 40px;
+        }
+        
+        .support-option h4 {
+            margin-bottom: 8px;
+            color: var(--secondary);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 550px;
+            border-radius: var(--radius);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            background: linear-gradient(120deg, var(--accent), var(--secondary));
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-header h3 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .whatsapp-icon-large {
+            font-size: 2.5rem;
+        }
+        
+        .modal-body {
+            padding: 35px;
+        }
+        
+        .whatsapp-notice {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .whatsapp-notice-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            min-width: 40px;
+        }
+        
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .payment-option:hover, .payment-option.active {
+            border-color: var(--primary);
+            background: #f8fdff;
+        }
+        
+        .payment-option.active::before {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .payment-option input {
+            width: 20px;
+            height: 20px;
+            margin-top: 3px;
+        }
+        
+        .payment-label {
+            flex: 1;
+        }
+        
+        .payment-label h4 {
+            margin-bottom: 5px;
+            color: var(--secondary);
+            font-size: 1.25rem;
+        }
+        
+        .payment-label p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .modal-footer {
+            padding: 0 35px 35px;
+            text-align: center;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        /* Success Message */
+        .success-container {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            animation: bounce 0.8s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .success-title {
+            font-size: 2.2rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+        
+        .success-message {
+            color: var(--gray);
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .whatsapp-confirmation {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .whatsapp-confirmation p {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+        
+        .whatsapp-number {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.3rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(120deg, var(--accent), var(--dark));
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .copyright {
+            margin-top: 15px;
+            opacity: 0.9;
+            font-size: 1.05rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero p {
+                font-size: 1.25rem;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .book-request-container, .about-content {
+                padding: 30px 25px;
+            }
+            
+            .modal-content {
+                margin: 20px;
+            }
+            
+            .modal-body {
+                padding: 25px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .btn {
+                padding: 10px 22px;
+                font-size: 0.95rem;
+            }
+            
+            .benefit-icon {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span class="logo-icon">📚</span>
+                    <span>Ebook Library</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="main">Request Book</a></li>
+                    <li><a href="#" class="nav-link" data-page="about">About support</a></li>
+                </ul>
+                <button class="btn btn-primary" id="requestBtn">
+                    <span>📚</span>
+                    <span>Request Book</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <section id="home" class="page active">
+        <div class="container">
+            <div class="hero">
+                <h1>📚 Your Personal Ebook Library</h1>
+                <marquee behavior="alternate" style="color: var(--primary); font-size: 1.2rem; margin-bottom: 20px;">Share the website to a friend and another friend!</marquee>
+                <p>Access thousands of ebooks instantly. Request any book and receive it directly on your WhatsApp. No complicated steps, no waiting, just pure knowledge at your fingertips.</p>
+                <button class="btn btn-primary cta-button" id="homeRequestBtn">
+                    <span>Start Reading Now</span>
+                    <span>→</span>
+                </button>
+            </div>
+            
+            <div class="benefits">
+                <div class="benefit-card">
+                    <div class="benefit-icon">📱</div>
+                    <h3>WhatsApp Delivery</h3>
+                    <p>Receive your ebooks directly on WhatsApp within minutes of your request. No email needed!</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">💳</div>
+                    <h3>Flexible Payment</h3>
+                    <p>Choose to pay via mobile money before or after receiving your ebook. Your choice, your convenience but stay faithful.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">⏱️</div>
+                    <h3>Instant Access</h3>
+                    <p>Get your requested ebooks delivered within minutes. No waiting, no delays, just instant reading.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>Your information is safe with us. We respect your privacy and never share your data with third parties.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Page (Book Request) -->
+    <section id="main" class="page">
+        <div class="container">
+            <h2 class="page-title">Request Your Ebook</h2>
+            <div class="book-request-container">
+                <form class="book-form" id="bookForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name <span style="color: var(--warning);">*</span></label>
+                            <input type="text" id="fullName" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="whatsappContact">Your WhatsApp Number <span style="color: var(--warning);">*</span></label>
+                            <input type="tel" id="whatsappContact" placeholder="+233 55 123 4567" required>
+                            <small style="color: var(--gray); font-size: 0.9rem;">Include country code (e.g., +233 for Ghana)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookTitle">Book Title <span style="color: var(--warning);">*</span></label>
+                            <input type="text" id="bookTitle" placeholder="Enter the exact book title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="author">Author Name <span style="color: var(--warning);">*</span></label>
+                            <input type="text" id="author" placeholder="Enter author's full name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="additionalInfo">Additional Details (Optional)</label>
+                        <textarea id="additionalInfo" placeholder="Edition, format preference, specific chapters, or any other details..."></textarea>
+                    </div>
+                    
+                    <div class="price-note">
+                        <strong>💰 Pricing Information:</strong> Most books are free! Premium books may require a small fee (typically ₵5-₵20 via Mobile Money). You'll be notified of any charges before payment.
+                    </div>
+                    
+                    <div class="submit-container">
+                        <button type="submit" class="btn btn-primary" id="requestBookBtn">
+                            <span>📤 Request This Book</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Page -->
+    <section id="about" class="page">
+        <div class="container">
+            <h2 class="page-title">About Ebook Library</h2>
+            <div class="about-content">
+                <div class="about-section">
+                    <h3>🌟 Our Story</h3>
+                    <p>Welcome to Ebook Library, your gateway to unlimited knowledge! I created this platform because I believe everyone deserves easy access to books and learning materials. Whether you're a student, professional, or just love reading, this library is designed with you in mind.</p>
+                    <p>With years of experience in digital content distribution, I've built this service to be simple, fast, and reliable. No complicated registrations, no hidden fees – just straightforward access to the books you need.</p>
+                </div>
+                
+                <div class="about-section">
+                    <h3>👨‍💻 About Me</h3>
+                    <div class="admin-info">
+                        <h4>Meet the Admin</h4>
+                        <p>I'm passionate about making education accessible to everyone. This platform is my way of contributing to the learning community. I personally review every book request and ensure you get exactly what you need.</p>
+                        <p><strong>WhatsApp:</strong> <span class="whatsapp-number">+233 59 362 5059</span></p>
+                        <p><strong>Location:</strong> Ghana</p>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <h3>❤️ Support This Service</h3>
+                    <p>This library was built with love and dedication. If you find this service valuable and want to help keep it running and improving, your support would mean the world to me:</p>
+                    
+                    <div class="support-options">
+                        <div class="support-option">
+                            <div class="support-icon">☕</div>
+                            <div>
+                                <h4>Buy Me a Coffee</h4>
+                                <p>Help cover server costs and keep the service running smoothly</p>
+                            </div>
+                        </div>
+                        <div class="support-option">
+                            <div class="support-icon">💡</div>
+                            <div>
+                                <h4>Suggest Improvements</h4>
+                                <p>Your feedback helps make this library better for everyone</p>
+                            </div>
+                        </div>
+                        <div class="support-option">
+                            <div class="support-icon">📚</div>
+                            <div>
+                                <h4>Donate Books</h4>
+                                <p>Share ebooks, you own to expand our collection for others</p>
+                            </div>
+                        </div>
+                        <div class="support-option">
+                            <div class="support-icon">📣</div>
+                            <div>
+                                <h4>Spread the Word</h4>
+                                <p>Tell your friends and family about this free service</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-section">
+                    <h3>📧 Contact & Support</h3>
+                    <p>For any inquiries, suggestions, or support:</p>
+                    <p><strong>MOMO No.:</strong> <span class="whatsapp-number">+233 59 362 5059</span></p>
+                    <p><strong>Hours:</strong> Available daily, 6 AM - 10 PM GMT</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WhatsApp Modal -->
+    <div class="modal" id="whatsappModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" id="modalClose">&times;</button>
+                <h3>
+                    <span class="whatsapp-icon-large">📱</span>
+                    <span>WhatsApp Delivery Confirmation</span>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <div class="whatsapp-notice">
+                    <div class="whatsapp-notice-icon">ℹ️</div>
+                    <div>
+                        <strong>Your ebook will be sent directly to your WhatsApp number!</strong>
+                        <p style="margin-top: 8px;">After confirming your request, you'll receive the book on WhatsApp within minutes. Make sure your WhatsApp number is correct.</p>
+                    </div>
+                </div>
+                
+                <h4 style="margin: 25px 0 20px; color: var(--secondary); font-size: 1.5rem;">Payment Method</h4>
+                <div class="payment-options">
+                    <label class="payment-option active">
+                        <input type="radio" name="paymentOption" value="after" checked>
+                        <div class="payment-label">
+                            <h4>📱 Pay After Receiving Book</h4>
+                            <p>Get the book first on WhatsApp, then pay via Mobile Money if there's a fee. No upfront payment required!</p>
+                        </div>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="paymentOption" value="before">
+                        <div class="payment-label">
+                            <h4>💳 Pay Before Receiving Book</h4>
+                            <p>Pay via Mobile Money first to confirm your request immediately. You'll receive the book right after payment confirmation.</p>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="confirmRequestBtn">
+                        <span>✅ Confirm & Send Request</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <span class="whatsapp-icon-large">✅</span>
+                    <span>Request Sent Successfully!</span>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <div class="success-container">
+                    <div class="success-icon">🎉</div>
+                    <h2 class="success-title">Your Request Has Been Received!</h2>
+                    <p class="success-message">Great news! Your ebook request has been successfully sent to our admin. You'll receive your book on WhatsApp within minutes.</p>
+                    
+                    <div class="whatsapp-confirmation">
+                        <p><strong>📱 Admin's WhatsApp:</strong> <span class="whatsapp-number">+233 59 362 5059</span></p>
+                        <p><strong>⏰ Expected Delivery:</strong> shortly</p>
+                        <p><strong>💰 Payment:</strong> You'll be notified on WhatsApp if there are any charges</p>
+                    </div>
+                    
+                    <p style="margin-top: 20px; color: var(--gray); font-size: 1.05rem;">
+                        Keep your WhatsApp open and check for messages from our admin. If you don't receive anything within 30 minutes, please contact us directly on WhatsApp.
+                    </p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="doneBtn">
+                        <span>Done</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>📚 Ebook Library - Instant Access to Knowledge</p>
+                <p>Request books anytime, receive them instantly on WhatsApp</p>
+                <p class="copyright">© 2026 Ebook Library. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Admin WhatsApp number (Ghana format)
+        const ADMIN_WHATSAPP = '233593625059'; // Without + to comply with WhatsApp API
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetPage = link.getAttribute('data-page');
+                    showPage(targetPage);
+                    
+                    // Update active navigation link
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+            
+            // Request button in header
+            document.getElementById('requestBtn').addEventListener('click', () => {
+                showPage('main');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector('.nav-link[data-page="main"]').classList.add('active');
+            });
+            
+            // Home page CTA button
+            document.getElementById('homeRequestBtn').addEventListener('click', () => {
+                showPage('main');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector('.nav-link[data-page="main"]').classList.add('active');
+            });
+            
+            // Book form submission
+            document.getElementById('bookForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Validate WhatsApp number
+                const whatsappInput = document.getElementById('whatsappContact');
+                const whatsappValue = whatsappInput.value.trim();
+                
+                // Remove any non-digit characters except +
+                const cleanedValue = whatsappValue.replace(/[^\d+]/g, '');
+                
+                // Check if it starts with + and has 10-15 digits
+                const isValidFormat = /^\+?\d{10,15}$/.test(cleanedValue);
+                
+                if (!isValidFormat) {
+                    alert('Please enter a valid WhatsApp number (with country code). Example: +233 59 362 5059');
+                    whatsappInput.focus();
+                    return;
+                }
+                
+                // Show WhatsApp modal
+                document.getElementById('whatsappModal').classList.add('active');
+            });
+            
+            // Modal close button
+            document.getElementById('modalClose').addEventListener('click', () => {
+                document.getElementById('whatsappModal').classList.remove('active');
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('whatsappModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('whatsappModal')) {
+                    document.getElementById('whatsappModal').classList.remove('active');
+                }
+            });
+            
+            // Payment option selection
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    // Remove active class from all options
+                    document.querySelectorAll('.payment-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    // Add active class to selected option
+                    option.classList.add('active');
+                    // Check the radio button
+                    const radio = option.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    
+                    // If "Pay After" is selected, scroll to the submit button
+                    if (radio.value === 'after') {
+                        // Close the modal and scroll to submit button
+                        document.getElementById('whatsappModal').classList.remove('active');
+                        
+                        // Show success modal
+                        document.getElementById('successModal').classList.add('active');
+                        
+                        // Create WhatsApp link
+                        const fullName = document.getElementById('fullName').value.trim();
+                        const whatsappContact = document.getElementById('whatsappContact').value.trim();
+                        const bookTitle = document.getElementById('bookTitle').value.trim();
+                        const author = document.getElementById('author').value.trim();
+                        const additionalInfo = document.getElementById('additionalInfo').value.trim();
+                        
+                        // Create the message to send to admin
+                        const message = `📚 NEW EBOOK REQUEST 📚\n\n` +
+                            `👤 Requester Details:\n` +
+                            `Name: ${fullName}\n` +
+                            `WhatsApp: ${whatsappContact}\n\n` +
+                            `📖 Book Information:\n` +
+                            `Title: ${bookTitle}\n` +
+                            `Author: ${author}\n` +
+                            `Additional Info: ${additionalInfo || 'None specified'}\n\n` +
+                            `💰 Payment Method: PAY AFTER RECEIVING (Mobile Money)\n\n` +
+                            `⏰ Request Time: ${new Date().toLocaleString()}\n\n` +
+                            `Please send this book to the requester on WhatsApp. Thank you!`;
+                        
+                        // URL encode the message
+                        const encodedMessage = encodeURIComponent(message);
+                        
+                        // Create WhatsApp link to admin (without + sign for API compatibility)
+                        const whatsappNumber = ADMIN_WHATSAPP;
+                        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                        
+                        // Open WhatsApp with the message after a short delay
+                        setTimeout(() => {
+                            window.open(whatsappURL, '_blank');
+                            
+                            // Reset the form after a delay
+                            setTimeout(() => {
+                                document.getElementById('bookForm').reset();
+                            }, 1000);
+                        }, 1000);
+                    }
+                });
+            });
+            
+            // Handle "Pay Before" option separately
+            document.getElementById('confirmRequestBtn').addEventListener('click', () => {
+                // Get all form data
+                const fullName = document.getElementById('fullName').value.trim();
+                const whatsappContact = document.getElementById('whatsappContact').value.trim();
+                const bookTitle = document.getElementById('bookTitle').value.trim();
+                const author = document.getElementById('author').value.trim();
+                const additionalInfo = document.getElementById('additionalInfo').value.trim();
+                const paymentOption = document.querySelector('input[name="paymentOption"]:checked').value;
+                
+                // Validate WhatsApp number again
+                if (!whatsappContact) {
+                    alert('Please provide your WhatsApp number to receive the book.');
+                    return;
+                }
+                
+                // Format payment option text
+                const paymentText = paymentOption === 'before' 
+                    ? 'PAY BEFORE RECEIVING (Mobile Money)' 
+                    : 'PAY AFTER RECEIVING (Mobile Money)';
+                
+                // Create the message to send to admin
+                const message = `📚 NEW EBOOK REQUEST 📚\n\n` +
+                    `👤 Requester Details:\n` +
+                    `Name: ${fullName}\n` +
+                    `WhatsApp: ${whatsappContact}\n\n` +
+                    `📖 Book Information:\n` +
+                    `Title: ${bookTitle}\n` +
+                    `Author: ${author}\n` +
+                    `Additional Info: ${additionalInfo || 'None specified'}\n\n` +
+                    `💰 Payment Method: ${paymentText}\n\n` +
+                    `⏰ Request Time: ${new Date().toLocaleString()}\n\n` +
+                    `Please send this book to the requester on WhatsApp. Thank you!`;
+                
+                // URL encode the message
+                const encodedMessage = encodeURIComponent(message);
+                
+                // Create WhatsApp link to admin (without + sign for API compatibility)
+                const whatsappNumber = ADMIN_WHATSAPP;
+                const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+                
+                // Close the modal
+                document.getElementById('whatsappModal').classList.remove('active');
+                
+                // Show success modal
+                document.getElementById('successModal').classList.add('active');
+                
+                // Open WhatsApp with the message after a short delay
+                setTimeout(() => {
+                    window.open(whatsappURL, '_blank');
+                    
+                    // Reset the form after a delay
+                    setTimeout(() => {
+                        document.getElementById('bookForm').reset();
+                    }, 1000);
+                }, 1000);
+            });
+            
+            // Done button in success modal
+            document.getElementById('doneBtn').addEventListener('click', () => {
+                document.getElementById('successModal').classList.remove('active');
+                // Redirect to home page
+                showPage('home');
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector('.nav-link[data-page="home"]').classList.add('active');
+            });
+            
+            // Close success modal when clicking outside
+            document.getElementById('successModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('successModal')) {
+                    document.getElementById('successModal').classList.remove('active');
+                    showPage('home');
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    document.querySelector('.nav-link[data-page="home"]').classList.add('active');
+                }
+            });
+            
+            // Function to show page
+            function showPage(pageId) {
+                // Hide all pages
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show target page
+                document.getElementById(pageId).classList.add('active');
+            }
+            
+            // Initialize with home page active
+            showPage('home');
+            document.querySelector('.nav-link[data-page="home"]').classList.add('active');
+            
+            // Add input restriction for WhatsApp number field
+            document.getElementById('whatsappContact').addEventListener('input', function(e) {
+                // Allow only numbers and + sign
+                this.value = this.value.replace(/[^0-9+]/g, '');
+                
+                // Automatically format the number as +XX XXX XXX XXX
+                let value = this.value.replace(/\D/g, ''); // Remove non-digits
+                
+                if (value.startsWith('0')) {
+                    value = '233' + value.substring(1); // Convert Ghana format 0XX to +233XX
+                } else if (value.startsWith('+')) {
+                    // Remove + temporarily to format
+                    value = value.substring(1);
+                }
+                
+                // Format as +XXX XXX XXX XXX
+                if (value.length >= 3) {
+                    value = '+' + value.substring(0, 3) + ' ' + value.substring(3);
+                }
+                if (value.length >= 7) {
+                    value = value.substring(0, 7) + ' ' + value.substring(7);
+                }
+                if (value.length >= 11) {
+                    value = value.substring(0, 11) + ' ' + value.substring(11);
+                }
+                
+                this.value = value;
+            });
+        });
+    </script>
+</body>
+</html>
